@@ -21,8 +21,8 @@ datanode|localhost:50075||
 hive|localhost:10002||
 hue|localhost:8989||
 jupyter lab|localhost:8888||
-spark master|localhost:8080||
-superset|localhost:8089||
+spark master|localhost:8080|default: 2 workers, 512MB ram each.|
+superset|localhost:8089|username:admin - password:admin|
 
 
 
