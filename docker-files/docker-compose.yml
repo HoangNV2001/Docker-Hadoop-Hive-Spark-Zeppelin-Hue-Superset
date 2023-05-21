@@ -40,13 +40,6 @@ services:
       my_network:
         ipv4_address: 172.27.1.6
 
-  resourcemanager:
-    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop2.7.4-java8
-    environment:
-      SERVICE_PRECONDITION: "namenode:50070 datanode:50075"
-    env_file:
-      - ./hadoop-hive.env
-
 # Mắc Hìve
   hive-server:
     image: bde2020/hive:2.3.2-postgresql-metastore
@@ -109,7 +102,7 @@ services:
     env_file:
       - ./hadoop-hive.env
     environment:
-        SERVICE_PRECONDITION: "namenode:50070 datanode:50075 hive-metastore-postgresql:5432 resourcemanager:8088 hive-metastore:9083"
+        SERVICE_PRECONDITION: "namenode:50070 datanode:50075 hive-metastore-postgresql:5432 hive-metastore:9083"
     networks:
       my_network:
         ipv4_address: 172.27.1.10
@@ -118,7 +111,7 @@ services:
     image: gethue/hue:4.6.0
     container_name: hue
     environment:
-      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 hive-metastore-postgresql:5432 resourcemanager:8088 hive-metastore:9083 huedb:5000"
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 hive-metastore-postgresql:5432 hive-metastore:9083 huedb:5000"
     # dns: 8.8.8.8
     ports:
     - "8989:8888"
