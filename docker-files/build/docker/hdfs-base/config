@@ -1,3 +1,0 @@
-Host *
-    AddressFamily inet
-	StrictHostKeyChecking no
