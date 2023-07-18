@@ -1,9 +1,9 @@
 # Bigdata stack on Docker
-## Requirements: 
+## Requirements
 docker-compose
 
 ## Set up:
-### For Windows:
+### For Windows
 
 
 	git clone https://github.com/HoangNV2001/Docker-Hadoop-Hive-Spark-JupyterLab-Hue-Superset --config core.autocrlf=input
