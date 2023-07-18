@@ -3,13 +3,16 @@
 docker-compose
 
 ## Set up:
-  go to **./docker-files**
+### For Windows:
 
-  then run:
+
+	git clone https://github.com/HoangNV2001/Docker-Hadoop-Hive-Spark-JupyterLab-Hue-Superset --config core.autocrlf=input
+ 
+ 	cd ./Docker-Hadoop-Hive-Spark-JupyterLab-Hue-Superset/docker-files
   
-  ```bash
-	docker-compose up
-  ```
+  	docker-compose up
+
+
 
 ## List of services 
 **Only list services with GUI, see docker-compose.yml file for details about all services and their versions.**
@@ -23,7 +26,6 @@ hue|localhost:8989||
 jupyter lab|localhost:8888||
 spark master|localhost:8080|default: 2 workers, 512MB ram each.|
 superset|localhost:8089|username:admin - password:admin|
-
 
 
 
