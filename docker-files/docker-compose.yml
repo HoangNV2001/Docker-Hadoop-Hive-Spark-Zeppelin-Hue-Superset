@@ -12,7 +12,8 @@ services:
       - 9870:9870
       - 9000:9000
     volumes:
-      - hadoop_namenode:/hadoop/dfs/name
+      # - hadoop_namenode:/hadoop/dfs/name
+      - "./volume/hadoop/namenode:/hadoop/dfs/name"
     environment:
       - CLUSTER_NAME=test
     env_file:
@@ -23,7 +24,8 @@ services:
     container_name: datanode
     restart: always
     volumes:
-      - hadoop_datanode:/hadoop/dfs/data
+      # - hadoop_datanode:/hadoop/dfs/data
+      - "./volume/hadoop/datanode:/hadoop/dfs/data"
     environment:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
@@ -56,7 +58,7 @@ services:
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
     volumes:
-      - hadoop_historyserver:/hadoop/yarn/timeline
+      - "./volume/hadoop/historyserver:/hadoop/yarn/timeline"
     env_file:
       - ./hadoop.env
   
@@ -98,7 +100,7 @@ services:
     image: postgres:12.1-alpine
     container_name: huedb
     volumes:
-        - pg_data:/var/lib/postgresl/data/
+        - "./volume/hue/pg_data:/var/lib/postgresl/data/"
     ports:
       - "5432"
     env_file:
@@ -171,7 +173,7 @@ services:
     container_name: superset_cache
     restart: unless-stopped
     volumes:
-      - redis:/data
+      - "./volume/superset/redis:/data"
 
   db:
     env_file: docker/.env-non-dev
@@ -179,7 +181,7 @@ services:
     container_name: superset_db
     restart: unless-stopped
     volumes:
-      - db_home:/var/lib/postgresql/data
+      - "./volume/superset/db_home:/var/lib/postgresql/data"
 
   superset:
     env_file: docker/.env-non-dev
@@ -195,7 +197,7 @@ services:
       - redis
     volumes: 
       - ./docker:/app/docker
-      - superset_home:/app/superset_home
+      - "./volume/superset/superset_home:/app/superset_home"
 
   superset-init:
     image: *superset-image
@@ -208,7 +210,7 @@ services:
     user: "root"
     volumes:
       - ./docker:/app/docker
-      - superset_home:/app/superset_home
+      - "./volume/superset/superset_home:/app/superset_home"
     healthcheck:
       disable: true
 
@@ -224,7 +226,7 @@ services:
     user: "root"
     volumes:
       - ./docker:/app/docker
-      - superset_home:/app/superset_home
+      - "./volume/superset/superset_home:/app/superset_home"
 
     healthcheck:
       test: ["CMD-SHELL", "celery -A superset.tasks.celery_app:app inspect ping -d celery@$$HOSTNAME"]
@@ -234,28 +236,15 @@ services:
     container_name: superset_worker_beat
     command: ["/app/docker/docker-bootstrap.sh", "beat"]
     env_file: docker/.env-non-dev
-    restart: unless-stopped
+    restart: "no"
     depends_on:
       - db
       - redis
     user: "root"
     volumes:
       - ./docker:/app/docker
-      - superset_home:/app/superset_home
+      - "./volume/superset/superset_home:/app/superset_home"
     healthcheck:
       disable: true
 
-volumes:
-  hadoop_namenode:
-  hadoop_datanode:
-  # shared-workspace:
-  #   name: "hadoop-distributed-file-system"
-  #   driver: local
-  hadoop_historyserver:
-  pg_data:
-  superset_home:
-    external: false
-  db_home:
-    external: false
-  redis:
-    external: false
+
