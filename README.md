@@ -2,7 +2,7 @@
 ## Requirements
 docker-compose
 
-## Set up:
+## Set up
 ### For Windows
 
 
