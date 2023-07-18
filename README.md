@@ -12,7 +12,7 @@ docker-compose
   
   	docker-compose up
 
-
+**Note: use** `--config core.autocrlf=input` **on cloning to handle Unix line endings**
 
 ## List of services 
 **Only list services with GUI, see docker-compose.yml file for details about all services and their versions.**
