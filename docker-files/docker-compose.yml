@@ -25,7 +25,7 @@ services:
       - 9870:9870
       - 9010:9000
     volumes:
-      - hadoop_namenode:/hadoop/dfs/name
+      - "./volume/hadoop_namenode:/hadoop/dfs/name"
     environment:
       - CLUSTER_NAME=test
       - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
@@ -37,7 +37,7 @@ services:
     container_name: datanode
     restart: always
     volumes:
-      - hadoop_datanode:/hadoop/dfs/data
+      - "./volume/hadoop_datanode:/hadoop/dfs/data"
     environment:
       SERVICE_PRECONDITION: "namenode:9870"
       CORE_CONF_fs_defaultFS: hdfs://namenode:9000
@@ -71,7 +71,7 @@ services:
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
     volumes:
-      - hadoop_historyserver:/hadoop/yarn/timeline
+      - "./volume/hadoop_historyserver:/hadoop/yarn/timeline"
     env_file:
       - ./hadoop-hive.env
 
@@ -123,8 +123,8 @@ services:
     ports:
       - "8090:8080"
     volumes:
-      - ./spark:/zeppelin/spark
-      - ./notebooks:/zeppelin/notebook
+      - "./volume/spark:/zeppelin/spark"
+      - "./volume/notebooks:/zeppelin/notebook"
     environment:
       - "MASTER=spark://spark-master:7077"
       - "SPARK_MASTER=spark://spark-master:7077"
@@ -434,13 +434,16 @@ services:
 
 volumes:
   hadoop_namenode:
+    external: true
   hadoop_datanode:
+    external: true
   hadoop_historyserver:
+    external: true
   pg_data:
-    external: false
+    external: true
   superset_home:
-    external: false
+    external: true
   db_home:
-    external: false
+    external: true
   redis:
-    external: false
+    external: true
