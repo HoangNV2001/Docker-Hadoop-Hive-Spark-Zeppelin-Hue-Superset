@@ -6,26 +6,32 @@ docker-compose
 ### For Windows
 
 
-	git clone https://github.com/HoangNV2001/Docker-Hadoop-Hive-Spark-JupyterLab-Hue-Superset --config core.autocrlf=input
+	$git clone https://github.com/HoangNV2001/Docker-Hadoop-Hive-Spark-JupyterLab-Hue-Superset --config core.autocrlf=input
  
- 	cd ./Docker-Hadoop-Hive-Spark-JupyterLab-Hue-Superset/docker-files
+ 	$cd ./Docker-Hadoop-Hive-Spark-JupyterLab-Hue-Superset/docker-files
   
-  	docker-compose up
+  	$docker-compose up --no-start
 
-**Note: use** `--config core.autocrlf=input` **on cloning to handle Unix line endings**
+	$docker-compose start database
+
+	$docker-compose up -d
+
+**Note:** 
+* **use** `--config core.autocrlf=input` **on cloning to handle Unix line endings**
+* **start database before docker-compose up**
 
 ## List of services 
 **Only list services with GUI, see docker-compose.yml file for details about all services and their versions.**
 
 Service|URL (only list GUIs)|Notes|
 | :---:   | :---: | :---: |
-namenode|localhost:50070||
-datanode|localhost:50075||
+namenode|localhost:9870||
+datanode|localhost:9864||
 hive|localhost:10002||
-hue|localhost:8989||
-jupyter lab|localhost:8888||
-spark master|localhost:8080|default: 2 workers, 512MB ram each.|
-superset|localhost:8089|username:admin - password:admin|
+hue|localhost:8888||
+zeppelin|localhost:8090||
+spark master|localhost:8080|default: 2 workers - 2 cores & 2GB ram each.|
+superset|localhost:8008|username:admin - password:admin|
 
 
 
