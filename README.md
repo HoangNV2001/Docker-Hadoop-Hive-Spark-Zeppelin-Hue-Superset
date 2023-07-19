@@ -17,8 +17,8 @@ docker-compose
 	$docker-compose up -d
 
 **Note:** 
-* **use** `--config core.autocrlf=input` **on cloning to handle Unix line endings**
-* **start database before docker-compose up**
+* **Use** `--config core.autocrlf=input` **on cloning to handle Unix line endings**
+* **Start database before running** `docker-compose up`
 
 ## List of services 
 **Only list services with GUI, see docker-compose.yml file for details about all services and their versions.**
