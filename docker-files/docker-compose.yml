@@ -123,14 +123,14 @@ services:
       - huedb
 
 # Spark & Jupyter
-  jupyterlab:
-    image: andreper/jupyterlab:3.0.0-spark-3.0.0
-    container_name: jupyterlab
-    ports:
-      - 8888:8888
-      - 4040:4040
-    # volumes:
-    #   - shared-workspace:/opt/workspace
+  # jupyterlab:
+  #   image: andreper/jupyterlab:3.0.0-spark-3.0.0
+  #   container_name: jupyterlab
+  #   ports:
+  #     - 8888:8888
+  #     - 4040:4040
+  #   # volumes:
+  #   #   - shared-workspace:/opt/workspace
 
   spark-master:
     image: andreper/spark-master:3.0.0
@@ -166,6 +166,19 @@ services:
     #   - shared-workspace:/opt/workspace
     depends_on:
       - spark-master
+
+  zeppelin:
+    image: apache/zeppelin:0.8.0
+    ports:
+      - "8086:8080"
+    volumes:
+      - ./spark:/zeppelin/spark
+      - ./notebooks:/zeppelin/notebook
+    environment:
+      - "MASTER=spark://spark-master:7077"
+      - "SPARK_MASTER=spark://spark-master:7077"
+      - "SPARK_HOME=/zeppelin/spark"
+
 
 #Superset
   redis:
