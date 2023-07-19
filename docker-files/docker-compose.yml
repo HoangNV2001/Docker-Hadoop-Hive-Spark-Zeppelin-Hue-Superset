@@ -1,15 +1,15 @@
 x-superset-image: &superset-image apachesuperset.docker.scarf.sh/apache/superset:${TAG:-latest-dev}
 x-superset-user: &superset-user root
-x-superset-depends-on: &superset-depends-on
-  - db
-  - redis
-x-superset-volumes: &superset-volumes
-  # /app/pythonpath_docker will be appended to the PYTHONPATH in the final container
-  - ./docker:/app/docker
-  - ./superset:/app/superset
-  - ./superset-frontend:/app/superset-frontend
-  - superset_home:/app/superset_home
-  - ./tests:/app/tests
+# x-superset-depends-on: &superset-depends-on
+#   - db
+#   - redis
+# x-superset-volumes: &superset-volumes
+#   # /app/pythonpath_docker will be appended to the PYTHONPATH in the final container
+#   - ./docker:/app/docker
+#   - ./superset:/app/superset
+#   - ./superset-frontend:/app/superset-frontend
+#   - superset_home:/app/superset_home
+#   - ./tests:/app/tests
 
 
 version: "3"
@@ -30,7 +30,7 @@ services:
       - CLUSTER_NAME=test
       - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
     env_file:
-      - ./hadoop.env
+      - ./hadoop-hive.env
 
   datanode:
     image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
@@ -44,7 +44,7 @@ services:
     ports:
       - "9864:9864"
     env_file:
-      - ./hadoop.env
+      - ./hadoop-hive.env
 
   resourcemanager:
     image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
@@ -53,7 +53,7 @@ services:
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864"
     env_file:
-      - ./hadoop.env
+      - ./hadoop-hive.env
 
   nodemanager1:
     image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
@@ -62,7 +62,7 @@ services:
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
     env_file:
-      - ./hadoop.env
+      - ./hadoop-hive.env
 
   historyserver:
     image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
@@ -73,7 +73,7 @@ services:
     volumes:
       - hadoop_historyserver:/hadoop/yarn/timeline
     env_file:
-      - ./hadoop.env
+      - ./hadoop-hive.env
 
 #Spark
 
@@ -167,6 +167,60 @@ services:
     container_name: presto-coordinator
     ports:
       - "8089:8089"
+
+#Hue
+  hue:
+    image: gethue/hue:20201215-135001
+    hostname: hue
+    container_name: hue
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./conf/hue/z-hue.ini:/usr/share/hue/desktop/conf/z-hue.ini
+      - ./conf/hue/log.conf:/usr/share/hue/desktop/conf/log.conf
+      - ./conf/hive-conf/:/etc/hive/conf/
+    depends_on:
+    - database
+
+  database:
+    image: mysql:8.0
+    hostname: database
+    container_name: database
+    env_file:
+      - ./env/database.env
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --init-connect='SET NAMES UTF8;' --innodb-flush-log-at-trx-commit=0
+    volumes:
+      - ./db/data:/var/lib/mysql
+      - ./db/sql:/docker-entrypoint-initdb.d
+#      - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
+
+  # huedb:
+  #   image: postgres:12.1-alpine
+  #   container_name: huedb
+  #   volumes:
+  #       - pg_data:/var/lib/postgresl/data/
+  #   ports:
+  #     - "5432"
+  #   env_file:
+  #     - ./hadoop-hive.env
+  #   environment:
+  #       SERVICE_PRECONDITION: "namenode:9870 hive-metastore-postgresql:5432 hive-metastore:9083" #datanode:9875 
+
+
+  # hue:
+  #   image: gethue/hue:4.6.0
+  #   container_name: hue
+  #   environment:
+  #     SERVICE_PRECONDITION: "namenode:9870 hive-metastore-postgresql:5432 hive-metastore:9083 huedb:980" #datanode:9875 
+  #   ports:
+  #   - "8989:8888"
+  #   volumes:
+  #     - ./hue-overrides.ini:/usr/share/hue/desktop/conf/z-hue.ini
+  #   # depends_on:
+  #   links:
+  #     - huedb
+
+
 
 #Superset
   redis:
@@ -265,7 +319,7 @@ services:
 #     container_name: superset_db
 #     restart: unless-stopped
 #     ports:
-#       - "127.0.0.1:5432:5432"
+#       - "127.0.0.1:543x:543x" # 5432 hive-meta-store
 #     volumes:
 #       - db_home:/var/lib/postgresql/data
 
@@ -382,7 +436,8 @@ volumes:
   hadoop_namenode:
   hadoop_datanode:
   hadoop_historyserver:
-
+  pg_data:
+    external: false
   superset_home:
     external: false
   db_home:
