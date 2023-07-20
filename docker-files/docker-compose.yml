@@ -432,18 +432,18 @@ services:
 #       test: ["CMD-SHELL", "celery inspect ping -A superset.tasks.celery_app:app -d celery@$$HOSTNAME"]
 
 
-volumes:
-  hadoop_namenode:
-    external: true
-  hadoop_datanode:
-    external: true
-  hadoop_historyserver:
-    external: true
-  pg_data:
-    external: true
-  superset_home:
-    external: true
-  db_home:
-    external: true
-  redis:
-    external: true
+# volumes:
+#   hadoop_namenode:
+#     external: true
+#   hadoop_datanode:
+#     external: true
+#   hadoop_historyserver:
+#     external: true
+#   pg_data:
+#     external: true
+#   superset_home:
+#     external: true
+#   db_home:
+#     external: true
+#   redis:
+#     external: true
