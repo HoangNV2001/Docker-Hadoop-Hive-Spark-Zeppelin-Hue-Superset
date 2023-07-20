@@ -101,7 +101,7 @@ services:
       - "SPARK_MASTER=spark://spark-master:7077"
       - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
       - SPARK_WORKER_CORES=2
-      - SPARK_WORKER_MEMORY=2g
+      - SPARK_WORKER_MEMORY=8g
 
   spark-worker-2:
     image: bde2020/spark-worker:3.0.0-hadoop3.2
@@ -114,7 +114,61 @@ services:
       - "SPARK_MASTER=spark://spark-master:7077"
       - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
       - SPARK_WORKER_CORES=2
-      - SPARK_WORKER_MEMORY=2g
+      - SPARK_WORKER_MEMORY=8g
+  
+  spark-worker-3:
+    image: bde2020/spark-worker:3.0.0-hadoop3.2
+    container_name: spark-worker-3
+    depends_on:
+      - spark-master
+    ports:
+      - "8082:8082"
+    environment:
+      - "SPARK_MASTER=spark://spark-master:7077"
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+      - SPARK_WORKER_CORES=2
+      - SPARK_WORKER_MEMORY=8g
+
+  spark-worker-4:
+    image: bde2020/spark-worker:3.0.0-hadoop3.2
+    container_name: spark-worker-4
+    depends_on:
+      - spark-master
+    ports:
+      - "8082:8082"
+    environment:
+      - "SPARK_MASTER=spark://spark-master:7077"
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+      - SPARK_WORKER_CORES=2
+      - SPARK_WORKER_MEMORY=8g
+
+  spark-worker-5:
+    image: bde2020/spark-worker:3.0.0-hadoop3.2
+    container_name: spark-worker-5
+    depends_on:
+      - spark-master
+    ports:
+      - "8082:8082"
+    environment:
+      - "SPARK_MASTER=spark://spark-master:7077"
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+      - SPARK_WORKER_CORES=2
+      - SPARK_WORKER_MEMORY=8g
+
+  spark-worker-6:
+    image: bde2020/spark-worker:3.0.0-hadoop3.2
+    container_name: spark-worker-6
+    depends_on:
+      - spark-master
+    ports:
+      - "8082:8082"
+    environment:
+      - "SPARK_MASTER=spark://spark-master:7077"
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+      - SPARK_WORKER_CORES=2
+      - SPARK_WORKER_MEMORY=8g 
+
+
 
 #Zeppelin
 
