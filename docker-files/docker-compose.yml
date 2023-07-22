@@ -115,60 +115,9 @@ services:
 #   #   environment:
 #   #     - "SPARK_MASTER=spark://spark-master:7077"
 #   #     - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
-#   #     - SPARK_WORKER_CORES=2
+#   #     - SPARK_WORKER_CORES=4
 #   #     - SPARK_WORKER_MEMORY=8g
   
-#   # spark-worker-3:
-#   #   image: bde2020/spark-master:3.1.1-hadoop3.2
-#   #   container_name: spark-worker-3
-#   #   depends_on:
-#   #     - spark-master
-#   #   ports:
-#   #     - "8083:8083"
-#   #   environment:
-#   #     - "SPARK_MASTER=spark://spark-master:7077"
-#   #     - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
-#   #     - SPARK_WORKER_CORES=2
-#   #     - SPARK_WORKER_MEMORY=8g
-
-#   # spark-worker-4:
-#   #   image: bde2020/spark-master:3.1.1-hadoop3.2
-#   #   container_name: spark-worker-4
-#   #   depends_on:
-#   #     - spark-master
-#   #   ports:
-#   #     - "8084:8084"
-#   #   environment:
-#   #     - "SPARK_MASTER=spark://spark-master:7077"
-#   #     - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
-#   #     - SPARK_WORKER_CORES=2
-#   #     - SPARK_WORKER_MEMORY=8g
-
-#   # spark-worker-5:
-#   #   image: bde2020/spark-master:3.1.1-hadoop3.2
-#   #   container_name: spark-worker-5
-#   #   depends_on:
-#   #     - spark-master
-#   #   ports:
-#   #     - "8085:8085"
-#   #   environment:
-#   #     - "SPARK_MASTER=spark://spark-master:7077"
-#   #     - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
-#   #     - SPARK_WORKER_CORES=2
-#   #     - SPARK_WORKER_MEMORY=8g
-
-#   # spark-worker-6:
-#   #   image: bde2020/spark-master:3.1.1-hadoop3.2
-#   #   container_name: spark-worker-6
-#   #   depends_on:
-#   #     - spark-master
-#   #   ports:
-#   #     - "8086:8086"
-#   #   environment:
-#   #     - "SPARK_MASTER=spark://spark-master:7077"
-#   #     - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
-#   #     - SPARK_WORKER_CORES=2
-#   #     - SPARK_WORKER_MEMORY=8g 
 
 
 #Zeppelin
@@ -239,18 +188,6 @@ services:
       - ./db/sql:/docker-entrypoint-initdb.d
       - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
 
-  huedb:
-    image: postgres:12.1-alpine
-    container_name: huedb
-    volumes:
-        - pg_data:/var/lib/postgresl/data/
-    ports:
-      - "5432"
-    env_file:
-      - ./hadoop-hive.env
-    environment:
-        SERVICE_PRECONDITION: "namenode:9870 hive-metastore-postgresql:5432 hive-metastore:9083" #datanode:9875 
-
   hue:
     image: gethue/hue:20201215-135001
     hostname: hue
@@ -263,21 +200,6 @@ services:
       - ./conf/hive-conf/:/etc/hive/conf/
     depends_on:
     - database
-
-  # hue:
-  #   image: gethue/hue:4.6.0
-  #   container_name: hue
-  #   environment:
-  #     SERVICE_PRECONDITION: "namenode:9870 hive-metastore-postgresql:5432 hive-metastore:9083 huedb:980" #datanode:9875 
-  #   ports:
-  #   - "8989:8888"
-  #   volumes:
-  #     - ./hue-overrides.ini:/usr/share/hue/desktop/conf/z-hue.ini
-  #   # depends_on:
-  #   links:
-  #     - huedb
-
-
 
 #Superset
   redis:
@@ -295,22 +217,6 @@ services:
     volumes:
       - "./volume/superset/db_home:/var/lib/postgresql/data"
 
-  superset:
-    env_file: docker/.env-non-dev
-    image: *superset-image
-    container_name: superset_app
-    command: ["/app/docker/docker-bootstrap.sh", "app-gunicorn"]
-    user: "root"
-    restart: unless-stopped
-    ports:
-      - 8008:8088
-    depends_on:
-      - db
-      - redis
-    volumes: 
-      - ./docker:/app/docker
-      - "./volume/superset/superset_home:/app/superset_home"
-
   superset-init:
     image: *superset-image
     container_name: superset_init
@@ -326,183 +232,21 @@ services:
     healthcheck:
       disable: true
 
-  superset-worker:
-    image: *superset-image
-    container_name: superset_worker
-    command: ["/app/docker/docker-bootstrap.sh", "worker"]
+  superset:
     env_file: docker/.env-non-dev
+    image: *superset-image
+    container_name: superset_app
+    command: ["/app/docker/docker-bootstrap.sh", "app-gunicorn"]
+    user: "root"
     restart: unless-stopped
+    ports:
+      - 8008:8088
     depends_on:
       - db
       - redis
-    user: "root"
-    volumes:
+    volumes: 
       - ./docker:/app/docker
       - "./volume/superset/superset_home:/app/superset_home"
-
-    healthcheck:
-      test: ["CMD-SHELL", "celery -A superset.tasks.celery_app:app inspect ping -d celery@$$HOSTNAME"]
-
-  superset-worker-beat:
-    image: *superset-image
-    container_name: superset_worker_beat
-    command: ["/app/docker/docker-bootstrap.sh", "beat"]
-    env_file: docker/.env-non-dev
-    restart: "no"
-    depends_on:
-      - db
-      - redis
-    user: "root"
-    volumes:
-      - ./docker:/app/docker
-      - "./volume/superset/superset_home:/app/superset_home"
-    healthcheck:
-      disable: true
-
-
-# # #Superset
-# #   redis:
-# #     image: redis:7
-# #     container_name: superset_cache
-# #     restart: unless-stopped
-# #     ports:
-# #       - "127.0.0.1:6379:6379"
-# #     volumes:
-# #       - redis:/data
-
-# #   db:
-# #     env_file: docker/.env
-# #     image: postgres:14
-# #     container_name: superset_db
-# #     restart: unless-stopped
-# #     ports:
-# #       - "127.0.0.1:543x:543x" # 5432 hive-meta-store
-# #     volumes:
-# #       - db_home:/var/lib/postgresql/data
-
-# #   superset:
-# #     env_file: docker/.env
-# #     image: *superset-image
-# #     container_name: superset_app
-# #     command: ["/app/docker/docker-bootstrap.sh", "app"]
-# #     restart: unless-stopped
-# #     ports:
-# #       - 8008:8088
-# #     user: *superset-user
-# #     depends_on: *superset-depends-on
-# #     volumes: *superset-volumes
-# #     environment:
-# #       CYPRESS_CONFIG: "${CYPRESS_CONFIG}"
-
-# #   superset-websocket:
-# #     container_name: superset_websocket
-# #     build: ./superset-websocket
-# #     image: superset-websocket
-# #     ports:
-# #       - 8009:8080
-# #     depends_on:
-# #       - redis
-# #     # Mount everything in superset-websocket into container and
-# #     # then exclude node_modules and dist with bogus volume mount.
-# #     # This is necessary because host and container need to have
-# #     # their own, separate versions of these files. .dockerignore
-# #     # does not seem to work when starting the service through
-# #     # docker-compose.
-# #     #
-# #     # For example, node_modules may contain libs with native bindings.
-# #     # Those bindings need to be compiled for each OS and the container
-# #     # OS is not necessarily the same as host OS.
-# #     volumes:
-# #       - ./superset-websocket:/home/superset-websocket
-# #       - /home/superset-websocket/node_modules
-# #       - /home/superset-websocket/dist
-# #     environment:
-# #       - PORT=8009
-# #       - REDIS_HOST=redis
-# #       - REDIS_PORT=6379
-# #       - REDIS_SSL=false
-
-# #   superset-init:
-# #     image: *superset-image
-# #     container_name: superset_init
-# #     command: ["/app/docker/docker-init.sh"]
-# #     env_file: docker/.env
-# #     depends_on: *superset-depends-on
-# #     user: *superset-user
-# #     volumes: *superset-volumes
-# #     environment:
-# #       CYPRESS_CONFIG: "${CYPRESS_CONFIG}"
-# #     healthcheck:
-# #       disable: true
-
-# #   superset-node:
-# #     image: node:16
-# #     container_name: superset_node
-# #     command: ["/app/docker/docker-frontend.sh"]
-# #     env_file: docker/.env
-# #     depends_on: *superset-depends-on
-# #     volumes: *superset-volumes
-
-# #   superset-worker:
-# #     image: *superset-image
-# #     container_name: superset_worker
-# #     command: ["/app/docker/docker-bootstrap.sh", "worker"]
-# #     env_file: docker/.env
-# #     restart: unless-stopped
-# #     depends_on: *superset-depends-on
-# #     user: *superset-user
-# #     volumes: *superset-volumes
-# #     healthcheck:
-# #       test: ["CMD-SHELL", "celery -A superset.tasks.celery_app:app inspect ping -d celery@$$HOSTNAME"]
-# #     # Bump memory limit if processing selenium / thumbnails on superset-worker
-# #     # mem_limit: 2038m
-# #     # mem_reservation: 128M
-
-# #   superset-worker-beat:
-# #     image: *superset-image
-# #     container_name: superset_worker_beat
-# #     command: ["/app/docker/docker-bootstrap.sh", "beat"]
-# #     env_file: docker/.env
-# #     restart: unless-stopped
-# #     depends_on: *superset-depends-on
-# #     user: *superset-user
-# #     volumes: *superset-volumes
-# #     healthcheck:
-# #       disable: true
-
-# #   superset-tests-worker:
-# #     image: *superset-image
-# #     container_name: superset_tests_worker
-# #     command: ["/app/docker/docker-bootstrap.sh", "worker"]
-# #     env_file: docker/.env
-# #     environment:
-# #       DATABASE_HOST: localhost
-# #       DATABASE_DB: test
-# #       REDIS_CELERY_DB: 2
-# #       REDIS_RESULTS_DB: 3
-# #       REDIS_HOST: localhost
-# #     network_mode: host
-# #     depends_on: *superset-depends-on
-# #     user: *superset-user
-# #     volumes: *superset-volumes
-# #     healthcheck:
-# #       test: ["CMD-SHELL", "celery inspect ping -A superset.tasks.celery_app:app -d celery@$$HOSTNAME"]
-
-#     spark_volume:
-# #   hadoop_namenode:
-# #     external: true
-# #   hadoop_datanode:
-# #     external: true
-# #   hadoop_historyserver:
-# #     external: true
-# #   pg_data:
-# #     external: true
-# #   superset_home:
-# #     external: true
-# #   db_home:
-# #     external: true
-# #   redis:
-# #     external: true
 
 volumes:
     spark_volume:

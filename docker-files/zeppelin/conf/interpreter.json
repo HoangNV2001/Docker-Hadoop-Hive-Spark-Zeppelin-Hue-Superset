@@ -8,102 +8,122 @@
         "default.url": {
           "name": "default.url",
           "value": "jdbc:hive2://localhost:10000/",
-          "type": "string"
+          "type": "string",
+          "description": "The URL for JDBC."
         },
         "default.user": {
           "name": "default.user",
           "value": "",
-          "type": "string"
+          "type": "string",
+          "description": "The JDBC user name"
         },
         "default.password": {
           "name": "default.password",
           "value": "",
-          "type": "password"
+          "type": "password",
+          "description": "The JDBC user password"
         },
         "default.driver": {
           "name": "default.driver",
           "value": "org.apache.hive.jdbc.HiveDriver",
-          "type": "string"
+          "type": "string",
+          "description": "JDBC Driver Name"
         },
         "default.completer.ttlInSeconds": {
           "name": "default.completer.ttlInSeconds",
           "value": "120",
-          "type": "number"
+          "type": "number",
+          "description": "Time to live sql completer in seconds (-1 to update everytime, 0 to disable update)"
         },
         "default.completer.schemaFilters": {
           "name": "default.completer.schemaFilters",
           "value": "",
-          "type": "textarea"
+          "type": "textarea",
+          "description": "Сomma separated schema (schema \u003d catalog \u003d database) filters to get metadata for completions. Supports \u0027%\u0027 symbol is equivalent to any set of characters. (ex. prod_v_%,public%,info)"
         },
         "default.precode": {
           "name": "default.precode",
           "value": "",
-          "type": "textarea"
+          "type": "textarea",
+          "description": "SQL which executes while opening connection"
         },
         "default.statementPrecode": {
           "name": "default.statementPrecode",
           "value": "",
-          "type": "textarea"
+          "type": "textarea",
+          "description": "Runs before each run of the paragraph, in the same connection"
         },
         "common.max_count": {
           "name": "common.max_count",
           "value": "1000",
-          "type": "number"
+          "type": "number",
+          "description": "Max number of SQL result to display."
         },
         "zeppelin.jdbc.auth.type": {
           "name": "zeppelin.jdbc.auth.type",
           "value": "",
-          "type": "string"
+          "type": "string",
+          "description": "If auth type is needed, Example: KERBEROS"
         },
         "zeppelin.jdbc.auth.kerberos.proxy.enable": {
           "name": "zeppelin.jdbc.auth.kerberos.proxy.enable",
           "value": "true",
-          "type": "checkbox"
+          "type": "checkbox",
+          "description": "When auth type is Kerberos, enable/disable Kerberos proxy with the login user to get the connection. Default value is true."
         },
         "zeppelin.jdbc.concurrent.use": {
           "name": "zeppelin.jdbc.concurrent.use",
           "value": true,
-          "type": "checkbox"
+          "type": "checkbox",
+          "description": "Use parallel scheduler"
         },
         "zeppelin.jdbc.concurrent.max_connection": {
           "name": "zeppelin.jdbc.concurrent.max_connection",
           "value": "10",
-          "type": "number"
+          "type": "number",
+          "description": "Number of concurrent execution"
         },
         "zeppelin.jdbc.keytab.location": {
           "name": "zeppelin.jdbc.keytab.location",
           "value": "",
-          "type": "string"
+          "type": "string",
+          "description": "Kerberos keytab location"
         },
         "zeppelin.jdbc.principal": {
           "name": "zeppelin.jdbc.principal",
           "value": "",
-          "type": "string"
+          "type": "string",
+          "description": "Kerberos principal"
         },
         "zeppelin.jdbc.interpolation": {
           "name": "zeppelin.jdbc.interpolation",
           "value": false,
-          "type": "checkbox"
+          "type": "checkbox",
+          "description": "Enable ZeppelinContext variable interpolation into paragraph text"
         },
         "zeppelin.jdbc.maxConnLifetime": {
           "name": "zeppelin.jdbc.maxConnLifetime",
           "value": "-1",
-          "type": "number"
+          "type": "number",
+          "description": "Maximum of connection lifetime in milliseconds. A value of zero or less means the connection has an infinite lifetime."
         },
         "zeppelin.jdbc.maxRows": {
           "name": "zeppelin.jdbc.maxRows",
           "value": "1000",
-          "type": "number"
+          "type": "number",
+          "description": "Maximum number of rows fetched from the query."
         },
         "zeppelin.jdbc.hive.timeout.threshold": {
           "name": "zeppelin.jdbc.hive.timeout.threshold",
           "value": "60000",
-          "type": "number"
+          "type": "number",
+          "description": "Timeout for hive job timeout"
         },
         "zeppelin.jdbc.hive.monitor.query_interval": {
           "name": "zeppelin.jdbc.hive.monitor.query_interval",
           "value": "1000",
-          "type": "number"
+          "type": "number",
+          "description": "Query interval for hive statement"
         }
       },
       "status": "DOWNLOADING_DEPENDENCIES",
