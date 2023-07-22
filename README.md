@@ -10,7 +10,7 @@ docker-compose
 
  	cd ./Docker-Hadoop-Hive-Spark-JupyterLab-Hue-Superset/docker-files
 
-	docker-compose up -d --no-start
+	docker-compose up --no-start
 
 	docker start database, superset_cache, superset_db, superset_init
 
