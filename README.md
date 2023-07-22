@@ -6,15 +6,19 @@ docker-compose
 ### For Windows
 
 
-	$git clone https://github.com/HoangNV2001/Docker-Hadoop-Hive-Spark-JupyterLab-Hue-Superset --config core.autocrlf=input
- 
- 	$cd ./Docker-Hadoop-Hive-Spark-JupyterLab-Hue-Superset/docker-files
+	git clone https://github.com/HoangNV2001/Docker-Hadoop-Hive-Spark-JupyterLab-Hue-Superset --config core.autocrlf=input
 
-	$docker-compose up -d
+ 	cd ./Docker-Hadoop-Hive-Spark-JupyterLab-Hue-Superset/docker-files
+
+	docker-compose up -d --no-start
+
+	docker start database, superset_cache, superset_db, superset_init
+
+	docker-compose up -d
 
 **Note:** 
 * **Use** `--config core.autocrlf=input` **on cloning to handle Unix line endings**
-
+* **Start** `database`, `superset_cache`, `superset_db`, `superset_init` **first.**
 ## List of services 
 **Only list services with GUI, see docker-compose.yml file for details about all services and their versions.**
 
