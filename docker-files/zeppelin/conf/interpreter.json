@@ -126,7 +126,8 @@
           "description": "Query interval for hive statement"
         }
       },
-      "status": "DOWNLOADING_DEPENDENCIES",
+      "status": "ERROR",
+      "errorReason": "Cannot fetch dependencies for org.apache.hadoop:hadoop-common:2.6.0",
       "interpreterGroup": [
         {
           "name": "sql",
