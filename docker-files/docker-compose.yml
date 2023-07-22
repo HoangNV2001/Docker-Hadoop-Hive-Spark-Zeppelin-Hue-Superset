@@ -1,15 +1,15 @@
-# # x-superset-image: &superset-image apachesuperset.docker.scarf.sh/apache/superset:${TAG:-latest-dev}
-# # x-superset-user: &superset-user root
-# # x-superset-depends-on: &superset-depends-on
-# #   - db
-# #   - redis
-# # x-superset-volumes: &superset-volumes
-# #   # /app/pythonpath_docker will be appended to the PYTHONPATH in the final container
-# #   - ./docker:/app/docker
-# #   - ./superset:/app/superset
-# #   - ./superset-frontend:/app/superset-frontend
-# #   - superset_home:/app/superset_home
-# #   - ./tests:/app/tests
+x-superset-image: &superset-image apachesuperset.docker.scarf.sh/apache/superset:${TAG:-latest-dev}
+x-superset-user: &superset-user root
+x-superset-depends-on: &superset-depends-on
+  - db
+  - redis
+x-superset-volumes: &superset-volumes
+  # /app/pythonpath_docker will be appended to the PYTHONPATH in the final container
+  - ./docker:/app/docker
+  - ./superset:/app/superset
+  - ./superset-frontend:/app/superset-frontend
+  - superset_home:/app/superset_home
+  - ./tests:/app/tests
 
 
 # version: "3"
@@ -227,19 +227,6 @@ services:
       - "8089:8089"
 
 #Hue
-  hue:
-    image: gethue/hue:20201215-135001
-    hostname: hue
-    container_name: hue
-    ports:
-      - "8888:8888"
-    volumes:
-      - ./conf/hue/z-hue.ini:/usr/share/hue/desktop/conf/z-hue.ini
-      - ./conf/hue/log.conf:/usr/share/hue/desktop/conf/log.conf
-      - ./conf/hive-conf/:/etc/hive/conf/
-    depends_on:
-    - database
-
   database:
     image: mysql:8.0
     hostname: database
@@ -264,6 +251,18 @@ services:
     environment:
         SERVICE_PRECONDITION: "namenode:9870 hive-metastore-postgresql:5432 hive-metastore:9083" #datanode:9875 
 
+  hue:
+    image: gethue/hue:20201215-135001
+    hostname: hue
+    container_name: hue
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./conf/hue/z-hue.ini:/usr/share/hue/desktop/conf/z-hue.ini
+      - ./conf/hue/log.conf:/usr/share/hue/desktop/conf/log.conf
+      - ./conf/hive-conf/:/etc/hive/conf/
+    depends_on:
+    - database
 
   # hue:
   #   image: gethue/hue:4.6.0

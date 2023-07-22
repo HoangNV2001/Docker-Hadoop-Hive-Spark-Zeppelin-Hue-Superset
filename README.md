@@ -9,16 +9,11 @@ docker-compose
 	$git clone https://github.com/HoangNV2001/Docker-Hadoop-Hive-Spark-JupyterLab-Hue-Superset --config core.autocrlf=input
  
  	$cd ./Docker-Hadoop-Hive-Spark-JupyterLab-Hue-Superset/docker-files
-  
-  	$docker-compose up --no-start
-
-	$docker-compose start database
 
 	$docker-compose up -d
 
 **Note:** 
 * **Use** `--config core.autocrlf=input` **on cloning to handle Unix line endings**
-* **Start database before running** `docker-compose up`
 
 ## List of services 
 **Only list services with GUI, see docker-compose.yml file for details about all services and their versions.**
